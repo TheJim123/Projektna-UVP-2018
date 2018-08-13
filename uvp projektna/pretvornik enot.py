@@ -6,7 +6,7 @@ class Osnove:
         self.vrednost = 0
         self.kolicine = {'masa' : ['mg', 'cg', 'dg', 'g', 'dag', 'hg', 'kg', 'Mg'],
                          'dolzina' : ['mm', 'cm', 'dm', 'm', 'dam', 'hm', 'km', 'Mm']}
-        razmerja = {'m' : 0.001, 'c' : 0.01, 'd' : 0.1, '' : 1, 'da' : 10, 'h' : 100, 'k' : 1000, 'M' : (10 ** 6) }
+        self.razmerja = {'m' : 0.001, 'c' : 0.01, 'd' : 0.1, '' : 1, 'da' : 10, 'h' : 100, 'k' : 1000, 'M' : (10 ** 6) }
         
     def nastavi_vrednost(self, vrednost):
         self.vrednost = float(vrednost)
@@ -31,6 +31,9 @@ class Pretvornik:
         self.vhodna_enotna_spremenljivka.set('')
         
         self.vhodna_enota = tk.OptionMenu(self.levi_okvir, self.vhodna_enotna_spremenljivka, *self.osnova.enote)
+        
+        self.vhodna_enotna_spremenljivka.trace('w', self.vrednost_vhodne_enote)
+        
         self.je_enako = tk.Label(self.levi_okvir, text = '=')
 ####################################################################################
         self.sredinski_okvir = tk.Frame(self.okno)
@@ -54,6 +57,9 @@ class Pretvornik:
         enote = self.osnova.enote
         self.izhodna_enotna_spremenljivka.set('')
         self.izhodna_enota = tk.OptionMenu(self.desni_okvir, self.izhodna_enotna_spremenljivka, *self.osnova.enote)
+
+        self.izhodna_enotna_spremenljivka.trace('w', self.vrednost_izhodne_enote)
+        
         self.je_enako = tk.Label(self.levi_okvir, text = '=')
         self.gumb = tk.Button(self.desni_okvir, text='Pretvori', command = self.pretvorba)
 ####################################################################################
@@ -82,13 +88,11 @@ class Pretvornik:
             self.vhodna_enota['menu'].add_command(label=enota, command=tk._setit(self.vhodna_enotna_spremenljivka, enota))
         
     def dolocitev_vhodne_vrednosti(self):
-        vrednost = float(self.vhod.get())
-        self.osnova.nastavi_vrednost(vrednost)
-        self.vhodna_vrednost = self.osnova.vrednost
-        return self.vhodna_vrednost
+        self.osnova.nastavi_vrednost(float(self.vhod.get()))
+        return self.osnova.vrednost
         
     def pretvori(self):
-        return self.dolocitev_vhodne_vrednosti() * 1.2
+        return  self.vrednost_vhodne_enote() * self.dolocitev_vhodne_vrednosti() / self.vrednost_izhodne_enote()
         
     def pretvorba(self):
         self.izhod.configure(text = '{0:.3f}'.format(self.pretvori()))
@@ -97,6 +101,13 @@ class Pretvornik:
         self.osnova.kolicina = self.kolicinska_spremenljivka.get()
         self.osnova.doloci_enote()
         self.osvezi_enote()
-
+        
+    def vrednost_vhodne_enote(self, *args):
+        v = self.osnova.razmerja[self.vhodna_enotna_spremenljivka.get()[:-1]]
+        return v
+    
+    def vrednost_izhodne_enote(self, *args):
+        i = self.osnova.razmerja[self.izhodna_enotna_spremenljivka.get()[:-1]]
+        return i
     
 Pretvornik()
