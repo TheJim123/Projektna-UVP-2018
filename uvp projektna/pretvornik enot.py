@@ -1,14 +1,20 @@
 import tkinter as tk
 class Osnove:
     def __init__(self):
-        self.kolicine = ['masa', 'dolzina']
-        masa = ['mg', 'cg', 'dg', 'g', 'dag', 'hg', 'kg', 't']
-        dolzina = ['mm', 'cm', 'dm', 'm', 'dam', 'hm', 'km']
-        self.enote = masa + dolzina
+        self.kolicina = ''
+        self.enote = ['']
         self.vrednost = 0
+        self.kolicine = {'masa' : ['mg', 'cg', 'dg', 'g', 'dag', 'hg', 'kg', 'Mg'],
+                         'dolzina' : ['mm', 'cm', 'dm', 'm', 'dam', 'hm', 'km', 'Mm']}
+        razmerja = {'m' : 0.001, 'c' : 0.01, 'd' : 0.1, '' : 1, 'da' : 10, 'h' : 100, 'k' : 1000, 'M' : (10 ** 6) }
+        
     def nastavi_vrednost(self, vrednost):
-        self.vrednost = vrednost
-
+        self.vrednost = float(vrednost)
+        
+    def doloci_enote(self):
+        if self.kolicina != '':
+            self.enote = self.kolicine[self.kolicina]
+            
 class Pretvornik:
     def __init__(self):
         self.osnova = Osnove() 
@@ -19,27 +25,35 @@ class Pretvornik:
         self.vhod = tk.Entry(self.levi_okvir)
         
         self.vhodna_vrednost = 0
-        vhodna_enotna_spremenljivka = tk.StringVar(self.levi_okvir)
-        enote = self.osnova.enote
-        vhodna_enotna_spremenljivka.set('')
-        self.vhodna_enota = tk.OptionMenu(self.levi_okvir, vhodna_enotna_spremenljivka, *enote)
+
+        self.vhodna_enotna_spremenljivka = tk.StringVar(self.levi_okvir)
+
+        self.vhodna_enotna_spremenljivka.set('')
+        
+        self.vhodna_enota = tk.OptionMenu(self.levi_okvir, self.vhodna_enotna_spremenljivka, *self.osnova.enote)
         self.je_enako = tk.Label(self.levi_okvir, text = '=')
 ####################################################################################
         self.sredinski_okvir = tk.Frame(self.okno)
-        kolicinska_spremenljivka = tk.StringVar(self.sredinski_okvir)
-        kolicine = self.osnova.kolicine
-        kolicinska_spremenljivka.set('')
-        self.kolicinski_meni = tk.OptionMenu(self.sredinski_okvir, kolicinska_spremenljivka, *kolicine)
+
+        self.kolicinska_spremenljivka = tk.StringVar(self.okno)
+
+        kolicine = self.osnova.kolicine.keys()
         
+        self.kolicinska_spremenljivka.set('')
+        
+        self.kolicinski_meni = tk.OptionMenu(self.sredinski_okvir, self.kolicinska_spremenljivka, *kolicine)
+
+        self.kolicinska_spremenljivka.trace('w', self.doloci_izbiro_enot)
 ################################################################################
         self.desni_okvir = tk.Frame(self.okno)
         
         self.izhod = tk.Label(self.desni_okvir, width= 20, text = '0')
         
-        izhodna_enotna_spremenljivka = tk.StringVar(self.levi_okvir)
+        self.izhodna_enotna_spremenljivka = tk.StringVar(self.levi_okvir)
+
         enote = self.osnova.enote
-        izhodna_enotna_spremenljivka.set('')
-        self.izhodna_enota = tk.OptionMenu(self.desni_okvir, izhodna_enotna_spremenljivka, *enote)
+        self.izhodna_enotna_spremenljivka.set('')
+        self.izhodna_enota = tk.OptionMenu(self.desni_okvir, self.izhodna_enotna_spremenljivka, *self.osnova.enote)
         self.je_enako = tk.Label(self.levi_okvir, text = '=')
         self.gumb = tk.Button(self.desni_okvir, text='Pretvori', command = self.pretvorba)
 ####################################################################################
@@ -55,16 +69,34 @@ class Pretvornik:
         self.izhodna_enota.grid(row = 5, column = 6)
 #####################################################################################
         self.okno.mainloop()
+        
+    def osvezi_enote(self):
+        self.izhodna_enotna_spremenljivka.set('')
+        self.vhodna_enotna_spremenljivka.set('')
+        self.vhodna_enota['menu'].delete(0, 'end')
+        self.izhodna_enota['menu'].delete(0, 'end')
+
+        nove_enote = tuple(self.osnova.enote)
+        for enota in nove_enote:
+            self.izhodna_enota['menu'].add_command(label=enota, command=tk._setit(self.izhodna_enotna_spremenljivka, enota))
+            self.vhodna_enota['menu'].add_command(label=enota, command=tk._setit(self.vhodna_enotna_spremenljivka, enota))
+        
     def dolocitev_vhodne_vrednosti(self):
-        vrednost = self.vhod.get()
-        self.vhodna_vrednost = (self.osnova.nastavi_vrednost(vrednost))
+        vrednost = float(self.vhod.get())
+        self.osnova.nastavi_vrednost(vrednost)
+        self.vhodna_vrednost = self.osnova.vrednost
+        return self.vhodna_vrednost
         
     def pretvori(self):
-        self.dolocitev_vhodne_vrednosti()
-        return self.vhodna_vrednost * 1.2
+        return self.dolocitev_vhodne_vrednosti() * 1.2
         
     def pretvorba(self):
-        self.izhod.configure(text = str(self.pretvori()))
-   
+        self.izhod.configure(text = '{0:.3f}'.format(self.pretvori()))
+        
+    def doloci_izbiro_enot(self, *args):
+        self.osnova.kolicina = self.kolicinska_spremenljivka.get()
+        self.osnova.doloci_enote()
+        self.osvezi_enote()
 
+    
 Pretvornik()
