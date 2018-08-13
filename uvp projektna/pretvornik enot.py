@@ -8,10 +8,11 @@ class Osnove:
                          'dolzina' : ['mm', 'cm', 'dm', 'm', 'dam', 'hm', 'km', 'Mm'],
                          'ploscina' : ['mm^2', 'cm^2', 'dm^2', 'm^2', 'a', 'ha', 'km^2'],
                          'volumen' : ['mm^3', 'cm^3', 'dm^3', 'm^3', 'km^3', 'ml', 'cl', 'dl', 'l', 'hl' ]}
-        self.desetiska_razmerja = {'m' : 0.001, 'c' : 0.01, 'd' : 0.1, '' : 1, 'da' : 10, 'h' : 100, 'k' : 1000, 'M' : (10 ** 6) }
         
+        self.desetiska_razmerja = {'m' : 0.001, 'c' : 0.01, 'd' : 0.1, '' : 1, 'da' : 10, 'h' : 100, 'k' : 1000, 'M' : (10 ** 6) }
         self.kvadratna_razmerja = {'m' : 100 ** (-3), 'c' : 100 ** (-2), 'd' : 100 ** (-1), '' : 1, 'a' : 100, 'ha' : 100 ** 2, 'k' : 100 ** 3}
         self.kubicna_razmerja = {'m' : 1000 ** (-3), 'c' : 1000 ** (-2), 'd' : 1000 ** (-1), '' : 1, 'k' : 1000 ** 3, 'ml' : 10 ** (-6), 'cl' : 10 ** (-5), 'dl' : 10 ** (-4), 'l' : 10 ** (-3), 'hl' : 10 ** (-1)}
+        
     def nastavi_vrednost(self, vrednost):
         self.vrednost = float(vrednost)
         
@@ -23,6 +24,7 @@ class Pretvornik:
     def __init__(self):
         self.osnova = Osnove() 
         self.okno = tk.Tk()
+        self.okno.title('Pretvornik enot')
 ################################################################################
         self.levi_okvir = tk.Frame(self.okno)
         
