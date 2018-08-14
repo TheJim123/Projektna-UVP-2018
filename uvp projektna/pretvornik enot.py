@@ -6,17 +6,17 @@ class Osnove:
         self.enote = ['']
         self.vrednost = 0
         self.kolicine = {'masa' : ['mg', 'cg', 'dg', 'g', 'dag', 'hg', 'kg', 't'],
-                         'dolzina' : ['mm', 'cm', 'dm', 'm', 'dam', 'hm', 'km', 'Mm'],
-                         'ploscina' : ['mm^2', 'cm^2', 'dm^2', 'm^2', 'a', 'ha', 'km^2'],
+                         'dolžina' : ['mm', 'cm', 'dm', 'm', 'dam', 'hm', 'km', 'Mm'],
+                         'ploščina' : ['mm^2', 'cm^2', 'dm^2', 'm^2', 'a', 'ha', 'km^2'],
                          'volumen' : ['mm^3', 'cm^3', 'dm^3', 'm^3', 'km^3', 'ml', 'cl', 'dl', 'l', 'hl' ],
                          'energija' : ['mJ', 'cJ', 'dJ', 'J', 'daJ', 'hJ', 'kJ', 'MJ'],
                          'koti v ravnini' : ['kotne sekunde', 'kotne minute', '°', 'rad'],
                          'podatki' : ['b', 'B', 'kB', 'MB', 'GB', 'TB'],
-                         'cas' : ['ms', 'cs', 'ds', 's', 'min', 'h', 'dan', 'mesec', 'let'],
+                         'čas' : ['ms', 'cs', 'ds', 's', 'min', 'h', 'dan', 'mesec', 'let'],
                          'frekvenca' : ['Hz', 'kHz', 'MHz', 'GHz', 'THz'],
                          'tlak' : ['Pa','mbar','kPa', 'bar']}
         
-        self.desetiske_kolicine = ['masa', 'dolzina', 'energija']
+        self.desetiske_kolicine = ['masa', 'dolžina', 'energija']
         
         self.desetiska_razmerja = {'m' : 0.001, 'c' : 0.01, 'd' : 0.1, '' : 1, 'da' : 10, 'h' : 100, 'k' : 1000, 'M' : (10 ** 6), 'G' : (10 ** 9), 'T' : (10 ** 12)}
         self.kvadratna_razmerja = {'m' : 100 ** (-3), 'c' : 100 ** (-2), 'd' : 100 ** (-1), '' : 1, 'a' : 100, 'ha' : 100 ** 2, 'k' : 100 ** 3}
@@ -132,7 +132,7 @@ class Pretvornik:
                 v = self.osnova.desetiska_razmerja[self.vhodna_enotna_spremenljivka.get()[:-1]]
         elif self.osnova.kolicina == 'frekvenca':
             v = self.osnova.desetiska_razmerja[self.vhodna_enotna_spremenljivka.get()[:-2]]
-        elif self.osnova.kolicina == 'ploscina':
+        elif self.osnova.kolicina == 'ploščina':
             if 'a' in self.vhodna_enotna_spremenljivka.get():
                 v = self.osnova.kvadratna_razmerja[self.vhodna_enotna_spremenljivka.get()]
             else:
@@ -147,7 +147,7 @@ class Pretvornik:
                 v = 0.125
             else:
                 v = self.osnova.podatkovna_razmerja[self.vhodna_enotna_spremenljivka.get()[:-1]]
-        elif self.osnova.kolicina == 'cas':
+        elif self.osnova.kolicina == 'čas':
             if self.vhodna_enotna_spremenljivka.get() in self.osnova.casovna_razmerja.keys():
                 v = self.osnova.casovna_razmerja[self.vhodna_enotna_spremenljivka.get()]
             else:
@@ -166,7 +166,7 @@ class Pretvornik:
                 i = self.osnova.desetiska_razmerja[self.izhodna_enotna_spremenljivka.get()[:-1]]
         elif self.osnova.kolicina == 'frekvenca':
             i = self.osnova.desetiska_razmerja[self.izhodna_enotna_spremenljivka.get()[:-2]]
-        elif self.osnova.kolicina == 'ploscina':
+        elif self.osnova.kolicina == 'ploščina':
             if 'a' in self.izhodna_enotna_spremenljivka.get():
                 i = self.osnova.kvadratna_razmerja[self.izhodna_enotna_spremenljivka.get()]
             else:
@@ -181,7 +181,7 @@ class Pretvornik:
                 i = 0.125
             else:
                 i = self.osnova.podatkovna_razmerja[self.izhodna_enotna_spremenljivka.get()[:-1]]
-        elif self.osnova.kolicina == 'cas':
+        elif self.osnova.kolicina == 'čas':
             if self.izhodna_enotna_spremenljivka.get() in self.osnova.casovna_razmerja.keys():
                 i = self.osnova.casovna_razmerja[self.izhodna_enotna_spremenljivka.get()]
             else:
