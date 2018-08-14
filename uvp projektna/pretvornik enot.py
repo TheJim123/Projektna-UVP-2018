@@ -103,7 +103,7 @@ class Pretvornik:
         return  self.vrednost_vhodne_enote() * self.dolocitev_vhodne_vrednosti() / self.vrednost_izhodne_enote()
         
     def pretvorba(self):
-        self.izhod.configure(text = '{}'.format(self.pretvori()))
+        self.izhod.configure(text = '{}'.format(round(self.pretvori(), 16)))
         
     def doloci_izbiro_enot(self, *args):
         self.osnova.kolicina = self.kolicinska_spremenljivka.get()
