@@ -52,7 +52,7 @@ class Pretvornik:
         self.vhodna_enotna_spremenljivka = tk.StringVar(self.okno)
         self.vhodna_enotna_spremenljivka.set('')
         self.vhodna_enota = tk.OptionMenu(self.okno, self.vhodna_enotna_spremenljivka, *self.osnova.enote)
-        self.vhodna_enotna_spremenljivka.trace('w', self.vrednost_vhodne_enote)
+        self.vhodna_enotna_spremenljivka.trace('w', self.vrednosti_enot)
 #######################################################################
         self.kolicinska_spremenljivka = tk.StringVar(self.okno)
 
@@ -71,7 +71,7 @@ class Pretvornik:
         enote = self.osnova.enote
         self.izhodna_enotna_spremenljivka.set('')
         self.izhodna_enota = tk.OptionMenu(self.okno, self.izhodna_enotna_spremenljivka, *self.osnova.enote)
-        self.izhodna_enotna_spremenljivka.trace('w', self.vrednost_izhodne_enote)
+        self.izhodna_enotna_spremenljivka.trace('w', self.vrednosti_enot)
 
         self.je_enako = tk.Label(self.okno, text='=')
         self.gumb = tk.Button(self.okno, text='Pretvori', command=self.pretvorba)
@@ -105,7 +105,7 @@ class Pretvornik:
         return self.osnova.vrednost
 
     def pretvori(self):
-        return self.vrednost_vhodne_enote() * self.dolocitev_vhodne_vrednosti() / self.vrednost_izhodne_enote()
+        return self.vrednosti_enot()[0] * self.dolocitev_vhodne_vrednosti() / self.vrednosti_enot()[1]
 
     def pretvorba(self):
         self.izhod.configure(text='{}'.format(round(self.pretvori(), 16)))
@@ -115,74 +115,42 @@ class Pretvornik:
         self.osnova.doloci_enote()
         self.osvezi_enote()
 
-    def vrednost_vhodne_enote(self, *args):
-        vhodna_enota = self.vhodna_enotna_spremenljivka.get()
-        if self.osnova.kolicina in self.osnova.desetiske_kolicine:
-            if self.vhodna_enotna_spremenljivka.get() == 't':
-                v = 10 ** 6
-            else:
-                v = self.osnova.desetiska_razmerja[vhodna_enota[:-1]]
-        elif self.osnova.kolicina == 'frekvenca':
-            v = self.osnova.desetiska_razmerja[vhodna_enota[:-2]]
-        elif self.osnova.kolicina == 'ploščina':
-            if 'a' in vhodna_enota:
-                v = self.osnova.kvadratna_razmerja[vhodna_enota]
-            else:
-                v = self.osnova.kvadratna_razmerja[vhodna_enota[:-3]]
-        elif self.osnova.kolicina == 'volumen':
-            if 'l' in vhodna_enota:
-                v = self.osnova.kubicna_razmerja[vhodna_enota]
-            else:
-                v = self.osnova.kubicna_razmerja[vhodna_enota[:-3]]
-        elif self.osnova.kolicina == 'podatki':
-            if 'b' == vhodna_enota:
-                v = 0.125
-            else:
-                v = self.osnova.podatkovna_razmerja[vhodna_enota[:-1]]
-        elif self.osnova.kolicina == 'čas':
-            if vhodna_enota in self.osnova.casovna_razmerja.keys():
-                v = self.osnova.casovna_razmerja[vhodna_enota]
-            else:
-                v = self.osnova.desetiska_razmerja[vhodna_enota[:-1]]
-        elif self.osnova.kolicina == 'tlak':
-            v = self.osnova.tlacna_razmerja[vhodna_enota]
-        elif self.osnova.kolicina == 'koti v ravnini':
-            v = self.osnova.kotna_razmerja[vhodna_enota]
-        return v
-
-    def vrednost_izhodne_enote(self, *args):
-        izhodna_enota = self.izhodna_enotna_spremenljivka.get()
-        if self.osnova.kolicina in self.osnova.desetiske_kolicine:
-            if izhodna_enota == 't':
-                i = 10 ** 6
-            else:
-                i = self.osnova.desetiska_razmerja[izhodna_enota[:-1]]
-        elif self.osnova.kolicina == 'frekvenca':
-            i = self.osnova.desetiska_razmerja[izhodna_enota[:-2]]
-        elif self.osnova.kolicina == 'ploščina':
-            if 'a' in izhodna_enota:
-                i = self.osnova.kvadratna_razmerja[izhodna_enota]
-            else:
-                i = self.osnova.kvadratna_razmerja[izhodna_enota[:-3]]
-        elif self.osnova.kolicina == 'volumen':
-            if 'l' in izhodna_enota:
-                i = self.osnova.kubicna_razmerja[izhodna_enota]
-            else:
-                i = self.osnova.kubicna_razmerja[izhodna_enota[:-3]]
-        elif self.osnova.kolicina == 'podatki':
-            if 'b' in izhodna_enota:
-                i = 0.125
-            else:
-                i = self.osnova.podatkovna_razmerja[izhodna_enota[:-1]]
-        elif self.osnova.kolicina == 'čas':
-            if izhodna_enota in self.osnova.casovna_razmerja.keys():
-                i = self.osnova.casovna_razmerja[izhodna_enota]
-            else:
-                i = self.osnova.desetiska_razmerja[izhodna_enota[:-1]]
-        elif self.osnova.kolicina == 'tlak':
-            i = self.osnova.tlacna_razmerja[izhodna_enota]
-        elif self.osnova.kolicina == 'koti v ravnini':
-            i = self.osnova.kotna_razmerja[izhodna_enota]
-        return i
+    def vrednosti_enot(self, *args):
+        enoti = [self.vhodna_enotna_spremenljivka.get(), self.izhodna_enotna_spremenljivka.get()]
+        vrednosti = []
+        for x in enoti:
+            if self.osnova.kolicina in self.osnova.desetiske_kolicine:
+                if x == 't':
+                    v = 10 ** 6
+                else:
+                    v = self.osnova.desetiska_razmerja[x[:-1]]
+            elif self.osnova.kolicina == 'frekvenca':
+                v = self.osnova.desetiska_razmerja[x[:-2]]
+            elif self.osnova.kolicina == 'ploščina':
+                if x in ['a', 'ha']:
+                    v = self.osnova.kvadratna_razmerja[x]
+                else:
+                    v = self.osnova.kvadratna_razmerja[x[:-3]]
+            elif self.osnova.kolicina == 'volumen':
+                if x in ['ml', 'cl', 'dl', 'l', 'hl']:
+                    v = self.osnova.kubicna_razmerja[x]
+                else:
+                    v = self.osnova.kubicna_razmerja[x[:-3]]
+            elif self.osnova.kolicina == 'podatki':
+                if 'b' == x:
+                    v = 0.125
+                else:
+                    v = self.osnova.podatkovna_razmerja[x[:-1]]
+            elif self.osnova.kolicina == 'čas':
+                if x in self.osnova.casovna_razmerja.keys():
+                    v = self.osnova.casovna_razmerja[x]
+                else:
+                    v = self.osnova.desetiska_razmerja[x[:-1]]
+            elif self.osnova.kolicina == 'tlak':
+                v = self.osnova.tlacna_razmerja[vhodna_enota]
+            elif self.osnova.kolicina == 'koti v ravnini':
+                v = self.osnova.kotna_razmerja[x]
+            vrednosti.append(v)
+        return vrednosti
 
 Pretvornik()
