@@ -8,7 +8,7 @@ class Osnove:
         self.enote = ['']
         self.vrednost = 0
         self.kolicine = {
-            'masa': ['mg', 'cg', 'dg', 'g', 'dag', 'hg', 'kg', 't'],
+            'masa': ['mg', 'cg', 'dg', 'g', 'dag', 'hg', 'kg', 't', 'oz', 'lb', 'st', 'tn', 'l.t.'],
             'dolžina': ['mm', 'cm', 'dm', 'm', 'dam', 'hm', 'km', 'Mm'],
             'ploščina': ['mm^2', 'cm^2', 'dm^2', 'm^2', 'a', 'ha', 'km^2'],
             'volumen': ['mm^3', 'cm^3', 'dm^3', 'm^3', 'ml', 'cl', 'dl', 'l', 'hl'],
@@ -19,8 +19,8 @@ class Osnove:
             'frekvenca': ['Hz', 'kHz', 'MHz', 'GHz', 'THz'],
             'tlak': ['Pa', 'mbar', 'kPa', 'bar']}
 
-        self.desetiske_kolicine = ['masa', 'dolžina', 'energija']
-
+        self.desetiske_kolicine = ['dolžina', 'energija']
+        self.masna_razmerja = {'mg': 0.001, 'oz' : 28.3495, 'lb' : 453.592, 'st' : 6350.29, 'g': 1, 'dag': 10, 'kg': 1000, 't' : 1e6, 'tn' : 907185, 'l.t.' : 1.016e+6}
         self.desetiska_razmerja = {'m': 0.001, 'c': 0.01, 'd': 0.1, '': 1, 'da': 10,
                                    'h': 100, 'k': 1000, 'M': (10 ** 6), 'G': (10 ** 9), 'T': (10 ** 12)}
         self.kvadratna_razmerja = {'m': 100 ** (-3), 'c': 100 ** (-2), 'd': 100 ** (-1),
@@ -120,10 +120,12 @@ class Pretvornik:
         vrednosti = []
         for x in enoti:
             if self.osnova.kolicina in self.osnova.desetiske_kolicine:
-                if x == 't':
-                    v = 10 ** 6
+                v = self.osnova.desetiska_razmerja[x[:-1]]
+            elif self.osnova.kolicina == 'masa':
+                if x == '':
+                    v = 0
                 else:
-                    v = self.osnova.desetiska_razmerja[x[:-1]]
+                    v = self.osnova.masna_razmerja[x]
             elif self.osnova.kolicina == 'frekvenca':
                 v = self.osnova.desetiska_razmerja[x[:-2]]
             elif self.osnova.kolicina == 'ploščina':
